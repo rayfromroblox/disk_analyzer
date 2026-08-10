@@ -1,0 +1,24 @@
+[package]
+name = "disk-analyzer-desktop"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Desktop interface for the disk analyzer"
+build = "build.rs"
+
+[[bin]]
+name = "disk-analyzer-desktop"
+path = "src/main.rs"
+
+[dependencies]
+disk-core = { path = "../../../crates/disk-core" }
+open.workspace = true
+rfd = "0.15"
+serde.workspace = true
+tauri = { version = "2.8", features = [] }
+
+[build-dependencies]
+tauri-build = { version = "2.4", features = [] }
+

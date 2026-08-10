@@ -1,0 +1,21 @@
+[package]
+name = "disk-analyzer-tui"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Terminal interface for the disk analyzer"
+
+[[bin]]
+name = "disk-analyzer-tui"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+crossbeam-channel.workspace = true
+crossterm.workspace = true
+disk-core = { path = "../../crates/disk-core" }
+open.workspace = true
+ratatui.workspace = true

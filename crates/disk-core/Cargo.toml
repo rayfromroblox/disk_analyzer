@@ -1,0 +1,20 @@
+[package]
+name = "disk-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Cross-platform disk usage scanning and aggregation engine"
+
+[dependencies]
+jwalk.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows-sys.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+

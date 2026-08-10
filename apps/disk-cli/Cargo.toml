@@ -1,0 +1,22 @@
+[package]
+name = "disk-analyzer-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Fast, scriptable cross-platform disk usage analyzer"
+
+[[bin]]
+name = "disk-analyzer"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+csv.workspace = true
+ctrlc.workspace = true
+disk-core = { path = "../../crates/disk-core" }
+serde.workspace = true
+serde_json.workspace = true
+
