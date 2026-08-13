@@ -12,7 +12,7 @@ The original Python/Tkinter release remains in [`turbo_daddy.py`](turbo_daddy.py
 - Detects sparse files, hard-link duplicates, symlinks, mount points, and scan errors.
 - Uses bounded parallel directory traversal with configurable concurrency.
 - Preserves partial results when canceled.
-- Works on Windows, macOS, and Linux.
+- Currently supported: Windows 10/11. Builds for macOS and Linux are discontinued for now and are marked "Coming soon" below.
 - Provides a paginated desktop browser, proportional space map, TUI, JSON, and CSV.
 
 ## Download and use
@@ -23,16 +23,13 @@ Rust, Node.js, Python, or this source checkout.
 | Your computer | Download | Use |
 | --- | --- | --- |
 | Windows 10/11 | `*-setup.exe` | Open it and follow the installer. |
-| Mac with Apple Silicon | `*aarch64.dmg` | Open the DMG and drag Disk Analyzer into Applications. |
-| Intel Mac | `*x64.dmg` | Open the DMG and drag Disk Analyzer into Applications. |
-| Most Linux distributions | `*.AppImage` | Mark it executable, then open it. |
-| Debian / Ubuntu | `*.deb` | Open it with the software installer. |
+
+Other platforms (macOS and most Linux distributions) are discontinued for now — coming soon. If you need a specific platform earlier, open an issue describing the target OS and we'll consider providing a build on request.
 
 Open the app and click **Analyze Home folder**. System drives and attached
 drives are also available as one-click options. No terminal path is required.
 
-> Windows SmartScreen and macOS Gatekeeper may show a first-run warning until
-> release signing certificates are configured. The release page is the trusted
+> Windows SmartScreen may show a first-run warning until release signing certificates are configured. The release page is the trusted
 > place to download builds.
 
 ## Build from source
@@ -69,7 +66,7 @@ Run `cargo run -p disk-analyzer-cli -- --help` for all options.
 cargo run --release -p disk-analyzer-tui -- /path/to/scan
 ```
 
-The TUI works in Linux, macOS, Windows Terminal, and remote SSH sessions. Use arrows or `j`/`k` to move, `Enter` to descend, Backspace to go up, `/` to filter, `s` to switch size mode, and `?` for help.
+The TUI works in Windows Terminal, Linux, macOS, and remote SSH sessions. Use arrows or `j`/`k` to move, `Enter` to descend, Backspace to go up, `/` to filter, `s` to switch size mode, and `?` for help.
 
 ### Desktop GUI
 
@@ -92,7 +89,7 @@ On a rolling-release Linux host, build the native executable with
 recommended for compatibility with older Linux systems; building an AppImage
 directly on Arch can outpace the older GTK tooling bundled by `linuxdeploy`.
 
-The desktop UI discovers common locations natively: the personal folder, the current folder, the system volume, and usable mounted volumes. It keeps the complete result in Rust and requests only the current paginated directory view. A scan containing millions of files therefore does not become millions of JavaScript objects.
+The desktop UI discovers common locations natively: the personal folder, the current folder, the system volume, and usable mounted volumes. It keeps the complete result in Rust and requests only the UI subset from the frontend.
 
 ## Size terminology
 
@@ -101,7 +98,7 @@ The desktop UI discovers common locations natively: the personal folder, the cur
 | Logical | File content length visible to applications. Hard-linked paths retain their individual logical lengths. |
 | Allocated | Filesystem storage assigned to entries. Sparse files can use much less than their logical size. Hard-linked storage is counted once by default. |
 
-Allocated totals use Unix `st_blocks × 512` and Windows `FILE_STANDARD_INFO.AllocationSize`. They include directory metadata reported by the filesystem. See [accuracy and filesystem semantics](docs/accuracy.md) for limitations involving snapshots, reflinks, reserved blocks, permissions, and files changing during a scan.
+Allocated totals use Unix `st_blocks × 512` and Windows `FILE_STANDARD_INFO.AllocationSize`. They include directory metadata reported by the filesystem. See [accuracy and filesystem semantics](docs/accuracy.md) for details.
 
 ## Project structure
 
@@ -128,7 +125,7 @@ npm run check
 npm run build
 ```
 
-The core test suite covers root-level files, directory rollups, sparse files, hard links, symlink policy, single-file roots, and early or mid-scan cancellation. CI runs the Rust interfaces on Linux, Windows, and macOS and checks the native desktop backend on all three platforms.
+The core test suite covers root-level files, directory rollups, sparse files, hard links, symlink policy, single-file roots, and early or mid-scan cancellation. CI runs the Rust interfaces on Linux and Windows.
 
 ## Safety
 
