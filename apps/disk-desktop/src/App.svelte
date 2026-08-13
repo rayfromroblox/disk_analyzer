@@ -538,7 +538,7 @@
 
       <div class="sidebar-footer">
         <span>Rust scan engine</span>
-        <span>v0.2.0</span>
+        <span>v1.1.0</span>
       </div>
     </aside>
 
