@@ -42,6 +42,10 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--green); out
 .eyebrow { margin: 0 0 10px; color: #6e96a7; font: 500 9px "DM Mono", monospace; letter-spacing: .17em; }
 .path-control { display: grid; grid-template-columns: 27px minmax(0, 1fr) 28px; align-items: center; height: 43px; border: 1px solid var(--line); border-radius: 7px; background: #091722; }
 .path-control:focus-within { border-color: #36758b; }
+.scan-targets { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.scan-targets button { max-width: 100%; overflow: hidden; padding: 5px 7px; border: 1px solid #24465a; border-radius: 4px; color: #6f919f; background: #0b1d2a; font: 500 8px "DM Mono", monospace; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.scan-targets button:hover, .scan-targets button.active { border-color: #3dbca7; color: #baf0e4; background: rgba(56, 186, 160, .1); }
+.scan-targets button:disabled { opacity: .45; cursor: default; }
 .path-icon { text-align: center; color: var(--green); }
 .path-control input { min-width: 0; border: 0; outline: 0; color: #cde0e8; background: transparent; font: 400 11px "DM Mono", monospace; text-overflow: ellipsis; }
 .icon-button { border: 0; background: transparent; color: #8ba6b2; cursor: pointer; }

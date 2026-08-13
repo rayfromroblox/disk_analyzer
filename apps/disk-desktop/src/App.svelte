@@ -73,7 +73,14 @@
     message: string;
   }
 
+  interface ScanTarget {
+    label: string;
+    path: string;
+    detail: string;
+  }
+
   let path = "";
+  let scanTargets: ScanTarget[] = [];
   let threads = 0;
   let followSymlinks = false;
   let stayOnFilesystem = true;
@@ -107,10 +114,15 @@
   $: totalPages = page ? Math.max(1, Math.ceil(page.total / pageSize)) : 1;
   $: currentPage = Math.floor(offset / pageSize) + 1;
   $: canGoBack = history.length > 1;
+  $: selectedTarget = scanTargets.find((target) => target.path === path);
+  $: analyzeLabel = selectedTarget ? `Analyze ${selectedTarget.label}` : "Analyze this folder";
 
   onMount(() => {
     invoke<string>("default_path")
       .then((defaultPath) => (path = defaultPath))
+      .catch((error) => (message = String(error)));
+    invoke<ScanTarget[]>("scan_targets")
+      .then((targets) => (scanTargets = targets))
       .catch((error) => (message = String(error)));
     return () => {
       if (pollTimer) clearTimeout(pollTimer);
@@ -466,10 +478,22 @@
           <input bind:value={path} disabled={busy} aria-label="Directory to scan" />
           <button class="icon-button" on:click={chooseFolder} disabled={busy} title="Browse">…</button>
         </label>
+        {#if scanTargets.length}
+          <div class="scan-targets" aria-label="Common scan locations">
+            {#each scanTargets.slice(0, 5) as target}
+              <button
+                class:active={path === target.path}
+                disabled={busy}
+                title={`${target.label} — ${target.detail}`}
+                on:click={() => (path = target.path)}
+              >{target.label}</button>
+            {/each}
+          </div>
+        {/if}
         {#if phase === "scanning"}
           <button class="primary danger" on:click={cancelScan}>Cancel scan</button>
         {:else}
-          <button class="primary" on:click={beginScan} disabled={!path.trim()}>Analyze space</button>
+          <button class="primary" on:click={beginScan} disabled={!path.trim()}>{analyzeLabel}</button>
         {/if}
       </section>
 

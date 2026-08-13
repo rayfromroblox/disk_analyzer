@@ -28,11 +28,10 @@ The result builds a child index after aggregation. Interfaces can navigate a dir
 
 ## Desktop boundary
 
-The Tauri process owns `Arc<ScanResult>` and exposes commands for status, paginated children, largest entries, errors, and native open/reveal operations. The Svelte webview never receives the full snapshot unless a future export feature explicitly requests it.
+The Tauri process owns `Arc<ScanResult>` and exposes commands for status, paginated children, largest entries, errors, and native open/reveal operations. It also provides a small OS adapter for scan targets: home/current folders, the system volume, and mount points or drive letters. The Svelte webview never receives the full snapshot unless a future export feature explicitly requests it.
 
 Starting a new scan cancels the previous generation. Every command includes a scan ID, preventing stale frontend requests from reading a newer result.
 
 ## Platform layer
 
 `platform.rs` is the only module that interprets operating-system metadata. Future fast paths—such as optional NTFS MFT enumeration—can implement the same result contract without changing the GUI, TUI, or CLI.
-

@@ -53,6 +53,11 @@ The TUI works in Linux, macOS, Windows Terminal, and remote SSH sessions. Use ar
 
 ### Desktop GUI
 
+For normal use, download the desktop build from the project releases, open it,
+and click **Analyze Home folder**. The app starts at your personal folder and
+also offers the computer's system volume and attached drives; no terminal path
+is required.
+
 Install the [Tauri system prerequisites](https://v2.tauri.app/start/prerequisites/) for your operating system, then:
 
 ```bash
@@ -72,7 +77,7 @@ On a rolling-release Linux host, build the native executable with
 recommended for compatibility with older Linux systems; building an AppImage
 directly on Arch can outpace the older GTK tooling bundled by `linuxdeploy`.
 
-The desktop UI keeps the complete result in Rust and requests only the current paginated directory view. A scan containing millions of files therefore does not become millions of JavaScript objects.
+The desktop UI discovers common locations natively: the personal folder, the current folder, the system volume, and usable mounted volumes. It keeps the complete result in Rust and requests only the current paginated directory view. A scan containing millions of files therefore does not become millions of JavaScript objects.
 
 ## Size terminology
 
