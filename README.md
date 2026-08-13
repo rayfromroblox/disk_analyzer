@@ -15,7 +15,27 @@ The original Python/Tkinter release remains in [`turbo_daddy.py`](turbo_daddy.py
 - Works on Windows, macOS, and Linux.
 - Provides a paginated desktop browser, proportional space map, TUI, JSON, and CSV.
 
-## Quick start
+## Download and use
+
+Download Disk Analyzer from the repository's **Releases** page. You do not need
+Rust, Node.js, Python, or this source checkout.
+
+| Your computer | Download | Use |
+| --- | --- | --- |
+| Windows 10/11 | `*-setup.exe` | Open it and follow the installer. |
+| Mac with Apple Silicon | `*aarch64.dmg` | Open the DMG and drag Disk Analyzer into Applications. |
+| Intel Mac | `*x64.dmg` | Open the DMG and drag Disk Analyzer into Applications. |
+| Most Linux distributions | `*.AppImage` | Mark it executable, then open it. |
+| Debian / Ubuntu | `*.deb` | Open it with the software installer. |
+
+Open the app and click **Analyze Home folder**. System drives and attached
+drives are also available as one-click options. No terminal path is required.
+
+> Windows SmartScreen and macOS Gatekeeper may show a first-run warning until
+> release signing certificates are configured. The release page is the trusted
+> place to download builds.
+
+## Build from source
 
 Rust 1.88 or newer is required.
 
@@ -52,11 +72,6 @@ cargo run --release -p disk-analyzer-tui -- /path/to/scan
 The TUI works in Linux, macOS, Windows Terminal, and remote SSH sessions. Use arrows or `j`/`k` to move, `Enter` to descend, Backspace to go up, `/` to filter, `s` to switch size mode, and `?` for help.
 
 ### Desktop GUI
-
-For normal use, download the desktop build from the project releases, open it,
-and click **Analyze Home folder**. The app starts at your personal folder and
-also offers the computer's system volume and attached drives; no terminal path
-is required.
 
 Install the [Tauri system prerequisites](https://v2.tauri.app/start/prerequisites/) for your operating system, then:
 

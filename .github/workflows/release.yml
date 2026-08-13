@@ -59,8 +59,15 @@ jobs:
           projectPath: apps/disk-desktop
           tagName: ${{ github.ref_name }}
           releaseName: "Disk Analyzer ${{ github.ref_name }}"
-          releaseBody: "Cross-platform desktop bundles, with CLI/TUI binaries attached by the tools job."
-          releaseDraft: true
+          releaseBody: |
+            Download the file for your computer, then open it:
+
+            - **Windows:** the `-setup.exe` installer (recommended) or `.msi`
+            - **macOS:** the `.dmg` that matches Apple Silicon or Intel
+            - **Linux:** the `.AppImage` (works on most distributions) or `.deb` for Debian/Ubuntu
+
+            The CLI and TUI archives are for terminal users. No Rust, Node.js, or source checkout is required for the desktop application.
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
 
