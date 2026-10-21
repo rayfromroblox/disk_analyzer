@@ -59,11 +59,15 @@ jobs:
         run: |
           source="target/${{ matrix.target }}/release/web-disk-analyzer"
           destination="npm/platforms/${{ matrix.platform }}/web-disk-analyzer"
+          asset="release/web-disk-analyzer-${{ matrix.platform }}"
+          mkdir -p release
           if [[ "${{ runner.os }}" == "Windows" ]]; then
             cp "${source}.exe" "${destination}.exe"
+            cp "${source}.exe" "${asset}.exe"
           else
             cp "$source" "$destination"
-            chmod +x "$destination"
+            cp "$source" "$asset"
+            chmod +x "$destination" "$asset"
           fi
       - name: Publish platform package
         shell: bash
@@ -81,7 +85,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: web-disk-analyzer-${{ matrix.platform }}
-          path: npm/platforms/${{ matrix.platform }}/web-disk-analyzer*
+          path: release/web-disk-analyzer-${{ matrix.platform }}*
           if-no-files-found: error
 
   publish:
