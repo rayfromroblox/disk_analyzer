@@ -1,4 +1,4 @@
-//! Shared disk scanning engine used by the CLI, TUI, and desktop application.
+//! Shared disk scanning engine used by the web server, CLI, and TUI.
 
 mod model;
 mod platform;

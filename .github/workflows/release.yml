@@ -8,93 +8,124 @@ permissions:
   contents: write
 
 jobs:
-  desktop:
-    name: Desktop bundle (${{ matrix.platform }})
+  build:
+    name: Build ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: linux-x86_64
-            os: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
-            args: ""
-          - platform: windows-x86_64
-            os: windows-latest
-            target: x86_64-pc-windows-msvc
-            args: ""
-          - platform: macos-aarch64
+          - platform: darwin-arm64
             os: macos-latest
             target: aarch64-apple-darwin
-            args: "--target aarch64-apple-darwin"
-          - platform: macos-x86_64
+          - platform: darwin-x64
             os: macos-15-intel
             target: x86_64-apple-darwin
-            args: "--target x86_64-apple-darwin"
+          - platform: linux-x64
+            os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+          - platform: linux-arm64
+            os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+          - platform: win32-x64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - platform: win32-arm64
+            os: windows-11-arm
+            target: aarch64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: apps/disk-desktop/package-lock.json
+          cache-dependency-path: apps/disk-web/package-lock.json
+          registry-url: https://registry.npmjs.org
+      - name: Build web interface
+        run: |
+          npm ci --prefix apps/disk-web
+          npm run build --prefix apps/disk-web
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v2
-      - run: npm ci
-        working-directory: apps/disk-desktop
-      - uses: tauri-apps/tauri-action@v0
+      - name: Set package version
+        shell: bash
+        run: node npm/scripts/set-version.mjs "${GITHUB_REF_NAME#v}"
+      - name: Build binary
+        run: cargo build --release -p disk-web --target ${{ matrix.target }}
+      - name: Stage binary
+        shell: bash
+        run: |
+          source="target/${{ matrix.target }}/release/web-disk-analyzer"
+          destination="npm/platforms/${{ matrix.platform }}/web-disk-analyzer"
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            cp "${source}.exe" "${destination}.exe"
+          else
+            cp "$source" "$destination"
+            chmod +x "$destination"
+          fi
+      - name: Publish platform package
+        shell: bash
+        working-directory: npm/platforms/${{ matrix.platform }}
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already published; skipping."
+          else
+            npm publish --access public
+          fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # linuxdeploy ships an older strip that cannot read newer ELF RELR
-          # sections. Cargo already strips our release binary.
-          NO_STRIP: "true"
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: actions/upload-artifact@v4
         with:
-          projectPath: apps/disk-desktop
-          tagName: ${{ github.ref_name }}
-          releaseName: "Disk Analyzer ${{ github.ref_name }}"
-          releaseBody: |
-            Download the file for your computer, then open it:
+          name: web-disk-analyzer-${{ matrix.platform }}
+          path: npm/platforms/${{ matrix.platform }}/web-disk-analyzer*
+          if-no-files-found: error
 
-            - **Windows:** the `-setup.exe` installer (recommended) or `.msi`
-            - **macOS:** the `.dmg` that matches Apple Silicon or Intel
-            - **Linux:** the `.AppImage` (works on most distributions) or `.deb` for Debian/Ubuntu
-
-            The CLI and TUI archives are for terminal users. No Rust, Node.js, or source checkout is required for the desktop application.
-          releaseDraft: false
-          prerelease: false
-          args: ${{ matrix.args }}
-
-  tools:
-    name: CLI and TUI (${{ matrix.target }})
-    needs: desktop
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-          - os: macos-latest
-            target: aarch64-apple-darwin
-          - os: macos-15-intel
-            target: x86_64-apple-darwin
-    runs-on: ${{ matrix.os }}
+  publish:
+    name: Publish npm package
+    needs: build
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-node@v4
         with:
-          targets: ${{ matrix.target }}
-      - uses: taiki-e/upload-rust-binary-action@v1
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Set package version
+        run: node npm/scripts/set-version.mjs "${GITHUB_REF_NAME#v}"
+      - name: Publish launcher
+        shell: bash
+        run: |
+          version=$(node -p "require('./npm/package.json').version")
+          if npm view "web-disk-analyzer@$version" version >/dev/null 2>&1; then
+            echo "web-disk-analyzer@$version is already published; skipping."
+          else
+            npm publish npm --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  release:
+    name: GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
         with:
-          bin: disk-analyzer,disk-analyzer-tui
-          target: ${{ matrix.target }}
-          archive: disk-analyzer-$target
-          token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: "Web Disk Analyzer ${{ github.ref_name }}"
+          body: |
+            The browser-based disk analyzer. Run it with:
+
+            ```bash
+            npx -y web-disk-analyzer
+            ```
+
+            Native binaries are attached below for anyone who wants to run the server directly.
+          files: artifacts/**/*
+          fail_on_unmatched_files: true

@@ -1,0 +1,20 @@
+{
+  "name": "web-disk-analyzer-darwin-x64",
+  "version": "1.1.0",
+  "description": "Prebuilt web-disk-analyzer binary for darwin-x64",
+  "license": "MIT",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "files": [
+    "web-disk-analyzer"
+  ],
+  "preferUnplugged": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rayfromroblox/disk_analyzer.git"
+  }
+}

@@ -3,12 +3,13 @@ members = [
     "crates/disk-core",
     "apps/disk-cli",
     "apps/disk-tui",
-    "apps/disk-desktop/src-tauri",
+    "apps/disk-web",
 ]
 default-members = [
     "crates/disk-core",
     "apps/disk-cli",
     "apps/disk-tui",
+    "apps/disk-web",
 ]
 resolver = "3"
 

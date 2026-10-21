@@ -1,7 +1,10 @@
 /target/
 **/node_modules/
 **/dist/
+apps/disk-web/ui-dist/
 **/src-tauri/gen/
 *.log
 .DS_Store
 Thumbs.db
+npm/platforms/*/web-disk-analyzer
+npm/platforms/*/web-disk-analyzer.exe

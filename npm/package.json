@@ -1,0 +1,49 @@
+{
+  "name": "web-disk-analyzer",
+  "version": "1.1.0",
+  "description": "A private, local-first disk usage analyzer that runs in your browser",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "web-disk-analyzer": "bin/web-disk-analyzer.js",
+    "webdisk": "bin/web-disk-analyzer.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "disk",
+    "storage",
+    "disk-usage",
+    "disk-space",
+    "analyzer",
+    "local-first",
+    "browser",
+    "npx"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rayfromroblox/disk_analyzer.git"
+  },
+  "homepage": "https://github.com/rayfromroblox/disk_analyzer#readme",
+  "bugs": {
+    "url": "https://github.com/rayfromroblox/disk_analyzer/issues"
+  },
+  "author": "rayfromroblox",
+  "optionalDependencies": {
+    "web-disk-analyzer-darwin-arm64": "1.1.0",
+    "web-disk-analyzer-darwin-x64": "1.1.0",
+    "web-disk-analyzer-linux-arm64": "1.1.0",
+    "web-disk-analyzer-linux-x64": "1.1.0",
+    "web-disk-analyzer-win32-arm64": "1.1.0",
+    "web-disk-analyzer-win32-x64": "1.1.0"
+  }
+}
