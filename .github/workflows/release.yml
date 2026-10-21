@@ -103,7 +103,7 @@ jobs:
           if npm view "web-disk-analyzer@$version" version >/dev/null 2>&1; then
             echo "web-disk-analyzer@$version is already published; skipping."
           else
-            npm publish npm --access public
+            npm publish ./npm --access public
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
